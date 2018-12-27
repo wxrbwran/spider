@@ -1,10 +1,5 @@
-const Crawler = require('Crawler')
-
-const novelPage = 'https://www.biquku.com/7/7420/';
-
-const sleep = async(time) => new Promise(resolve => setTimeout(resolve, time));
-
-const maxCount = 2;
+const Crawler = require('Crawler');
+const { sleep } = require('./sleep');
 
 const crawlerInstance = (opt, callback) => {
   return new Promise((resolve, reject) => {
@@ -12,7 +7,6 @@ const crawlerInstance = (opt, callback) => {
     const novel_crawler = new Crawler({
       rateLimit: 5000,
       forceUTF8: true,
-      // incomingEncoding: 'gbk',
       userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36',
       callback(err, res, done){
         if (err) {
@@ -28,7 +22,7 @@ const crawlerInstance = (opt, callback) => {
   })
 }
 
-function getNovelPageList() {
+function getNovelPageList(novelPage) {
   return crawlerInstance({url: novelPage}, ($) => {
     const cover = 'https://www.biquku.com' + $('#fmimg img').attr('src');
     const author = $('#info').find('p').eq(0).text().split('：')[1];
@@ -51,8 +45,11 @@ function getNovelPageDetail(list) {
     return { title: list.text, content, };
   });
 }
+
 (async () => {
-  const novelInfo = await getNovelPageList();
+  const novelPage = 'https://www.biquku.com/7/7420/';
+  const maxCount = 2;
+  const novelInfo = await getNovelPageList(novelPage);
   const length = novelInfo.lists.length;
   const count = maxCount > length ? length : maxCount;
   for (let i = 0; i < count; i++) {
