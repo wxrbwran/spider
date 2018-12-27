@@ -20,7 +20,8 @@ function getNovelPageDetail(list) {
   return crawlerInstance(list, ($) => {
     const content = unescape($('#content').html()
       .replace(/&#x/g,'%u')
-      .replace(/;|%uA0|＊|笔趣库 www.biquku.com/g,''));
+      .replace(/;|%uA0/g,''))
+      .replace(/＊|\(笔趣库 www.biquku.com\)/g, '');
     return { title: list.text, content, };
   });
 }
