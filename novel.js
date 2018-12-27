@@ -19,8 +19,7 @@ const crawlerInstance = (opt, callback) => {
           console.log(err);
           reject(new Error(err));
         } else {
-          const $ = res.$;
-          resolve(callback($));
+          resolve(callback(res.$));
         }
         done();
       }
@@ -46,7 +45,6 @@ function getNovelPageList() {
 
 function getNovelPageDetail(list) {
   return crawlerInstance(list, ($) => {
-    unescape("&#x5927;&#x5927;".replace(/&#x/g,'%u').replace(/;/g,''))
     const content = unescape($('#content').html()
       .replace(/&#x/g,'%u')
       .replace(/;|%uA0|＊|/g,''));
@@ -54,13 +52,10 @@ function getNovelPageDetail(list) {
   });
 }
 (async () => {
-  console.log(1);
   const novelInfo = await getNovelPageList();
-  console.log(2);
   const length = novelInfo.lists.length;
   const count = maxCount > length ? length : maxCount;
   for (let i = 0; i < count; i++) {
-    console.log(i);
     const { title, content } = await getNovelPageDetail(novelInfo.lists[i]);
     console.log(title, content);
     await sleep(800);
