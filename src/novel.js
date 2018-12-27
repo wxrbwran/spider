@@ -1,26 +1,5 @@
-const Crawler = require('Crawler');
-const { sleep } = require('./sleep');
-
-const crawlerInstance = (opt, callback) => {
-  return new Promise((resolve, reject) => {
-    console.log(`正在爬取${opt.url}`);
-    const novel_crawler = new Crawler({
-      rateLimit: 5000,
-      forceUTF8: true,
-      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36',
-      callback(err, res, done){
-        if (err) {
-          console.log(err);
-          reject(new Error(err));
-        } else {
-          resolve(callback(res.$));
-        }
-        done();
-      }
-    });
-    novel_crawler.queue(opt.url);
-  })
-}
+const { sleep } = require('../util/sleep');
+const crawlerInstance = require('./crawlerInstance');
 
 function getNovelPageList(novelPage) {
   return crawlerInstance({url: novelPage}, ($) => {
@@ -41,7 +20,7 @@ function getNovelPageDetail(list) {
   return crawlerInstance(list, ($) => {
     const content = unescape($('#content').html()
       .replace(/&#x/g,'%u')
-      .replace(/;|%uA0|＊|/g,''));
+      .replace(/;|%uA0|＊|笔趣库 www.biquku.com/g,''));
     return { title: list.text, content, };
   });
 }
@@ -50,6 +29,7 @@ function getNovelPageDetail(list) {
   const novelPage = 'https://www.biquku.com/7/7420/';
   const maxCount = 2;
   const novelInfo = await getNovelPageList(novelPage);
+  await sleep(800);
   const length = novelInfo.lists.length;
   const count = maxCount > length ? length : maxCount;
   for (let i = 0; i < count; i++) {
