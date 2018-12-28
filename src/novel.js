@@ -1,9 +1,12 @@
 const { sleep } = require('../util/sleep');
 const crawlerInstance = require('./crawlerInstance');
+const { writeFileAsync } = require('../util/writeFileAsync');
+const { createNovelNameDir } = require('../util/createNovelNameDir');
 
 function getNovelPageList(novelPage) {
   return crawlerInstance({url: novelPage}, ($) => {
     const cover = 'https://www.biquku.com' + $('#fmimg img').attr('src');
+    const name = $('#info h1').text();
     const author = $('#info').find('p').eq(0).text().split('：')[1];
     const updateAt = $('#info').find('p').eq(2).text().split('：')[1];
     const lists = [];
@@ -12,7 +15,7 @@ function getNovelPageList(novelPage) {
       const text = $(this).text();
       lists.push({ url, text });
     });
-    return { cover, author, updateAt, lists };
+    return { cover, name, author, updateAt, lists };
   })
 }
 
@@ -28,15 +31,17 @@ function getNovelPageDetail(list) {
 
 (async () => {
   const novelPage = 'https://www.biquku.com/7/7420/';
-  const maxCount = 2;
-  const novelInfo = await getNovelPageList(novelPage);
-  await sleep(800);
-  const length = novelInfo.lists.length;
+  const maxCount = 1;
+  const { name, lists } = await getNovelPageList(novelPage);
+  await createNovelNameDir(name);
+  await sleep(100);
+  const length = lists.length;
   const count = maxCount > length ? length : maxCount;
   for (let i = 0; i < count; i++) {
-    const { title, content } = await getNovelPageDetail(novelInfo.lists[i]);
-    console.log(title, content);
-    await sleep(800);
+    const { title, content } = await getNovelPageDetail(lists[i]);
+    console.log(title);
+    await writeFileAsync({ name, filename: title, content });
+    await sleep(3000);
   }
 })();
 
