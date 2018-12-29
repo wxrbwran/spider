@@ -12,3 +12,4 @@ const downloadImage = async (dir, img) => {
 module.exports = {
   downloadImage
 };
+
