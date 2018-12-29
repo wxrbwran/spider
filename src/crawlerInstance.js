@@ -3,28 +3,41 @@ const fs = require('fs');
 
 const crawlerInstance = (opt, callback) => {
   const defaultOptions = {
-    rateLimit: 5000,
+    type: 'single',
+    rateLimit: 3000,
     forceUTF8: true,
     userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36',
   };
   const option = Object.assign({}, defaultOptions, opt);
   return new Promise((resolve, reject) => {
-    console.log(`正在爬取${opt.url}`);
     const novel_crawler = new Crawler({
       ...option,
+      preRequest(params, done) {
+        console.log(`正在爬取${params.uri}`);
+        done();
+      },
       callback(err, res, done){
         if (err) {
           console.log(err);
           reject(new Error(err));
         } else {
-          resolve(callback(res.$));
+          if (option.type === 'multi' && !res.options.flag) {
+            callback(res.$)
+          } else {
+            resolve(callback(res.$));
+          }
         }
         done();
       }
     });
-    novel_crawler.queue({
-      uri: opt.url,
-    });
+    if (option.type === 'single') {
+      novel_crawler.queue({ uri: opt.url });
+    } else if (option.type === 'multi') {
+      const l = option.urls.length;
+      for (let i = 0; i < l; i++) {
+        novel_crawler.queue({ uri: option.urls[i].url, flag: i === l - 1 });
+      }
+    }
   })
 }
 
@@ -32,7 +45,7 @@ const downloadInstance = (opt) => {
   const defaultOptions = {
     encoding:null,
     jQuery:false,// set false to suppress warning message.
-    rateLimit: 5000,
+    rateLimit: 3000,
     userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36',
   };
   const option = Object.assign({}, defaultOptions, opt);
@@ -57,22 +70,5 @@ const downloadInstance = (opt) => {
     });
   })
 }
-// var c = new Crawler({
-//   encoding:null,
-//   jQuery:false,// set false to suppress warning message.
-//   callback:function(err, res, done){
-//     if(err){
-//       console.error(err.stack);
-//     }else{
-//       fs.createWriteStream(res.options.filename).write(res.body);
-//     }
-//
-//     done();
-//   }
-// });
-//
-// c.queue({
-//   uri:"https://nodejs.org/static/images/logos/nodejs-1920x1200.png",
-//   filename:"nodejs-1920x1200.png"
-// });
+
 module.exports = { crawlerInstance, downloadInstance };
