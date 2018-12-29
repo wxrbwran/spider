@@ -2,6 +2,7 @@ const { sleep } = require('../util/sleep');
 const crawlerInstance = require('./crawlerInstance');
 const { writeFileAsync } = require('../util/writeFileAsync');
 const { createNovelNameDir } = require('../util/createNovelNameDir');
+const { downloadImage } = require('../util/downloadImg');
 
 function getNovelPageList(novelPage) {
   return crawlerInstance({url: novelPage}, ($) => {
@@ -32,8 +33,11 @@ function getNovelPageDetail(list) {
 (async () => {
   const novelPage = 'https://www.biquku.com/7/7420/';
   const maxCount = 1;
-  const { name, lists } = await getNovelPageList(novelPage);
-  await createNovelNameDir(name);
+  const { name, cover, lists } = await getNovelPageList(novelPage);
+  const { dir, isExist } = await createNovelNameDir({ name, cover });
+  if (!isExist) {
+    await downloadImage(dir, cover);
+  }
   await sleep(100);
   const length = lists.length;
   const count = maxCount > length ? length : maxCount;
