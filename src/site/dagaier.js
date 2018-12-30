@@ -25,19 +25,23 @@ function getPageInfo(page) {
     url: base + page,
   }, async ($) => {
     const title =$('title').text().split(' - ')[0];
-    const { dir } = await createDir({ type: 'dagaier', name: title });
-    const lists = [];
-    const type1 = $('table .tr3 td input');
-    const type2 = $('.tpc_content.do_not_catch input');
-    const imgs = type1.length > 0 ? type1 : type2;
-    imgs.each(function () {
-      const src = $(this).attr('data-src');
-      const fileName = src.split('/').slice(-1)[0];
-      lists.push({ url: src, fileName });
-    });
-    if (lists.length > 0) {
-      console.log('爬图中 ====>>>>>', title);
-      await downloadImages(dir, lists);
+    const { dir, isExist } = await createDir({ type: 'dagaier', name: title });
+    if (!isExist) {
+      const lists = [];
+      const type1 = $('table .tr3 td input');
+      const type2 = $('.tpc_content.do_not_catch input');
+      const imgs = type1.length > 0 ? type1 : type2;
+      imgs.each(function () {
+        const src = $(this).attr('data-src');
+        const fileName = src.split('/').slice(-1)[0];
+        lists.push({ url: src, fileName });
+      });
+      if (lists.length > 0) {
+        console.log('爬图中 ====>>>>>', title);
+        await downloadImages(dir, lists);
+      }
+    } else {
+      console.log('目录存在，跳过', title);
     }
   });
 }
@@ -52,6 +56,7 @@ function downloadImages(dir, lists) {
 
 (async () => {
   for (let i = start; i < total; i++) {
+    console.log('爬取页码.==========',  i);
     await getPageList(dagaier + i);
   }
   console.log('爬取结束.');

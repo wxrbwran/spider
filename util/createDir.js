@@ -6,7 +6,7 @@ const createDirIfNotExist = ({ type, name }) => {
   return new Promise((resolve, reject) => {
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir);
-      console.log('创建目录成功');
+      console.log('创建目录成功', name);
       resolve({ dir, isExist: false });
     } else {
       resolve({ dir, isExist: true });
