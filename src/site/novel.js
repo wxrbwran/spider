@@ -2,11 +2,12 @@ const { sleep } = require('../../util/sleep');
 const { crawlerInstance, downloadInstance } = require('../crawlerInstance');
 const { writeFileAsync } = require('../../util/writeFileAsync');
 const { createDir } = require('../../util/createDir');
-const { base, novelPage } = require('../../config/novel');
+const { base, novelPage, maxCount } = require('../../config/novel');
 
 // module.exports = {
 //   base: 'https://www.biquku.com',
 //   novelPage: '/7/7420/',
+//   maxCount: 2,
 // };
 
 function getNovelPageList(page) {
@@ -42,15 +43,14 @@ function getNovelPageDetail(name, lists) {
 }
 
 (async () => {
-  const maxCount = 2;
   const { name, cover, lists } = await getNovelPageList(base + novelPage);
   const { dir, isExist } = await createDir({ type: 'novel', name });
   if (!isExist) {
     await downloadInstance({ dir, url: cover, fileName: `${name}.jpg` });
   }
   await sleep(100);
-  const length = lists.length;
-  lists.length = maxCount > length ? length : maxCount;
+  const total = lists.length;
+  lists.length = maxCount > total ? total : maxCount;
   await getNovelPageDetail(name, lists);
   console.log('爬取完毕');
 })();
