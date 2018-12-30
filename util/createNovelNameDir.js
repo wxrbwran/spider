@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const createNovelNameDirIfNotExist = ({ name }) => {
-  const dir = path.resolve(`./data/novel/${name}`);
+const createDirIfNotExist = ({ type, name }) => {
+  const dir = path.resolve(`./data/${type}/${name}`);
   return new Promise((resolve, reject) => {
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir);
@@ -15,5 +15,5 @@ const createNovelNameDirIfNotExist = ({ name }) => {
 };
 
 module.exports = {
-  createNovelNameDir:createNovelNameDirIfNotExist,
+  createDir:createDirIfNotExist,
 };

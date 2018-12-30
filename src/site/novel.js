@@ -1,7 +1,7 @@
-const { sleep } = require('../util/sleep');
-const { crawlerInstance, downloadInstance } = require('./crawlerInstance');
-const { writeFileAsync } = require('../util/writeFileAsync');
-const { createNovelNameDir } = require('../util/createNovelNameDir');
+const { sleep } = require('../../util/sleep');
+const { crawlerInstance, downloadInstance } = require('../crawlerInstance');
+const { writeFileAsync } = require('../../util/writeFileAsync');
+const { createDir } = require('../../util/createNovelNameDir');
 // const { downloadImage } = require('../util/downloadImg');
 
 function getNovelPageList(novelPage) {
@@ -41,9 +41,8 @@ function getNovelPageDetail(name, lists) {
   const maxCount = 2;
   const { name, cover, lists } = await getNovelPageList(novelPage);
   console.log(name, cover);
-  const { dir, isExist } = await createNovelNameDir({ name, cover });
+  const { dir, isExist } = await createDir({ type: 'novel', name });
   if (!isExist) {
-    // await downloadImage(dir, cover);
     await downloadInstance({ dir, url: cover, fileName: `${name}.jpg` });
   }
   await sleep(100);

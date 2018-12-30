@@ -42,10 +42,12 @@ const crawlerInstance = (opt, callback) => {
 }
 
 const downloadInstance = (opt) => {
+  // console.log(opt);
   const defaultOptions = {
+    type: 'single',
     encoding:null,
     jQuery:false,// set false to suppress warning message.
-    rateLimit: 3000,
+    rateLimit: 200,
     userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36',
   };
   const option = Object.assign({}, defaultOptions, opt);
@@ -57,17 +59,39 @@ const downloadInstance = (opt) => {
           console.log(err);
           reject(new Error(err));
         } else {
-          await fs.createWriteStream(`${option.dir}/${option.fileName}`)
-            .write(res.body);
-          resolve();
+          // console.log(res.body);
+          if (option.type === 'multi' && !res.options.flag) {
+            console.log('写入文件=====>>>>>', res.options.fileName);
+            await fs.createWriteStream(`${option.dir}/${res.options.fileName}`)
+              .write(res.body);
+          } else {
+            console.log('写入文件=====>>>>>', res.options.fileName);
+            await fs.createWriteStream(`${option.dir}/${res.options.fileName}`)
+              .write(res.body);
+            resolve();
+          }
         }
         done();
       }
     });
-    download_crawler.queue({
-      uri: option.url,
-      fileName: option.fileName || 'cover.jpg',
-    });
+    if (option.type === 'single') {
+      console.log('option.url', option.url);
+      download_crawler.queue({
+        uri: option.url,
+        fileName: option.fileName,
+      });
+    } else if (option.type === 'multi') {
+      const l = option.urls.length;
+      for (let i = 0; i < l; i++) {
+        const uri = option.urls[i].url;
+        const params = {
+          uri,
+          fileName: uri.split('/').slice(-1)[0],
+          flag: i === l - 1,
+        };
+        download_crawler.queue(params);
+      }
+    }
   })
 }
 
