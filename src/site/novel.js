@@ -1,20 +1,25 @@
 const { sleep } = require('../../util/sleep');
 const { crawlerInstance, downloadInstance } = require('../crawlerInstance');
 const { writeFileAsync } = require('../../util/writeFileAsync');
-const { createDir } = require('../../util/createNovelNameDir');
-// const { downloadImage } = require('../util/downloadImg');
+const { createDir } = require('../../util/createDir');
+const { base, novelPage } = require('../../config/novel');
 
-function getNovelPageList(novelPage) {
+// module.exports = {
+//   base: 'https://www.biquku.com',
+//   novelPage: '/7/7420/',
+// };
+
+function getNovelPageList(page) {
   return crawlerInstance({
-    url: novelPage,
+    url: page,
   }, ($) => {
-    const cover = 'https://www.biquku.com' + $('#fmimg img').attr('src');
+    const cover = base + $('#fmimg img').attr('src');
     const name = $('#info h1').text();
     const author = $('#info').find('p').eq(0).text().split('：')[1];
     const updateAt = $('#info').find('p').eq(2).text().split('：')[1];
     const lists = [];
     $('#list dd a').each(function(){
-      const url = novelPage + $(this).attr('href');
+      const url = page + $(this).attr('href');
       const text = $(this).text();
       lists.push({ url, text });
     });
@@ -37,10 +42,8 @@ function getNovelPageDetail(name, lists) {
 }
 
 (async () => {
-  const novelPage = 'https://www.biquku.com/7/7420/';
   const maxCount = 2;
-  const { name, cover, lists } = await getNovelPageList(novelPage);
-  console.log(name, cover);
+  const { name, cover, lists } = await getNovelPageList(base + novelPage);
   const { dir, isExist } = await createDir({ type: 'novel', name });
   if (!isExist) {
     await downloadInstance({ dir, url: cover, fileName: `${name}.jpg` });

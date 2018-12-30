@@ -2,7 +2,7 @@ const path = require('path');
 const { sleep } = require('../../util/sleep');
 const { crawlerInstance, downloadInstance } = require('../crawlerInstance');
 // const { writeFileAsync } = require('../../util/writeFileAsync');
-const { createDir } = require('../../util/createNovelNameDir');
+const { createDir } = require('../../util/createDir');
 
 const base = 'https://www.aitaotu.com';
 

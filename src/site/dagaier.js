@@ -1,5 +1,5 @@
 const { crawlerInstance, downloadInstance } = require('../crawlerInstance');
-const { createDir } = require('../../util/createNovelNameDir');
+const { createDir } = require('../../util/createDir');
 const { base, type, total, start } = require('../../config/dagaier');
 
 const dagaier = base + type;
