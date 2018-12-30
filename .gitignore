@@ -10,7 +10,7 @@ selenium-debug.log
 data/novel/
 data/dagaier/
 data/aitaotu/
-
+/config
 # Editor directories and files
 .idea
 .vscode
