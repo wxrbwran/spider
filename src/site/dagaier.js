@@ -36,7 +36,8 @@ function getPageInfo(dir, page, current) {
     const type2 = $('.tpc_content.do_not_catch input');
     const imgs = type1.length > 0 ? type1 : type2;
     imgs.each(function () {
-      const src = $(this).attr('data-src');
+      const src = $(this).attr('data-src') ||  $(this).attr('src');
+      // console.log('src', src);
       const fileName = src.split('/').slice(-1)[0];
       lists.push({ url: src, fileName });
     });
