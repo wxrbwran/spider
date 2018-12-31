@@ -32,11 +32,22 @@ const crawlerInstance = (opt, callback) => {
       }
     });
     if (option.type === 'single') {
-      novel_crawler.queue({ uri: opt.url });
+      const data = { uri: opt.url };
+      if (option.proxy) {
+        data.proxy = option.proxy;
+      }
+      novel_crawler.queue(data);
     } else if (option.type === 'multi') {
       const l = option.urls.length;
       for (let i = 0; i < l; i++) {
-        novel_crawler.queue({ uri: option.urls[i].url, flag: i === l - 1 });
+        const data = {
+          uri: option.urls[i].url,
+          flag: i === l - 1,
+        };
+        if (option.proxy) {
+          data.proxy = option.proxy;
+        }
+        novel_crawler.queue(data);
       }
     }
   })
