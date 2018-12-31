@@ -7,6 +7,7 @@ const dagaier = base + type;
 function getPageList(page, current) {
   return crawlerInstance({
     url: page,
+    proxy:"http://127.0.0.1:1087"
   }, async ($) => {
     const lists = [];
     $('.tr3.t_one.tac .tal h3 a').each(function () {
@@ -29,6 +30,7 @@ function getPageList(page, current) {
 function getPageInfo(dir, page, current) {
   return crawlerInstance({
     url: base + page,
+    proxy:"http://127.0.0.1:1087",
   }, async ($) => {
     const title =$('title').text().split(' - ')[0];
     const lists = [];
@@ -36,8 +38,7 @@ function getPageInfo(dir, page, current) {
     const type2 = $('.tpc_content.do_not_catch input');
     const imgs = type1.length > 0 ? type1 : type2;
     imgs.each(function () {
-      const src = $(this).attr('data-src') ||  $(this).attr('src');
-      // console.log('src', src);
+      const src = $(this).attr('data-src') || $(this).attr('src');
       const fileName = src.split('/').slice(-1)[0];
       lists.push({ url: src, fileName });
     });
