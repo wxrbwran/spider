@@ -5,6 +5,7 @@ const crawlerInstance = (opt, callback) => {
   const defaultOptions = {
     type: 'single',
     rateLimit: 3000,
+    retryTimeout: 2000,
     forceUTF8: true,
     userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36',
   };
@@ -48,6 +49,7 @@ const downloadInstance = (opt) => {
     encoding:null,
     jQuery:false,// set false to suppress warning message.
     rateLimit: 200,
+    retryTimeout: 2000,
     userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36',
   };
   const option = Object.assign({}, defaultOptions, opt);
