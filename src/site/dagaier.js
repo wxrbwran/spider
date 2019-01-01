@@ -7,8 +7,11 @@ const dagaier = base + type;
 function getPageList(page, current) {
   return crawlerInstance({
     url: page,
-    proxy:"http://127.0.0.1:1087"
+    rateLimit: 5500,
+    proxy:"http://127.0.0.1:1087",
+    userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7",
   }, async ($) => {
+    // console.log($('body').text());
     const lists = [];
     $('.tr3.t_one.tac .tal h3 a').each(function () {
       const href = $(this).attr('href');
@@ -17,6 +20,7 @@ function getPageList(page, current) {
         lists.push({ url: href, title });
       }
     });
+    console.log('lists', lists);
     for (const { url, title } of lists) {
       const { dir, isExist } = await createDir({ type: 'dagaier', name: title });
       if (!isExist) {
@@ -30,7 +34,9 @@ function getPageList(page, current) {
 function getPageInfo(dir, page, current) {
   return crawlerInstance({
     url: base + page,
+    rateLimit: 5500,
     proxy:"http://127.0.0.1:1087",
+    userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7",
   }, async ($) => {
     const title =$('title').text().split(' - ')[0];
     const lists = [];
