@@ -20,8 +20,8 @@ function getPageList(page, current) {
         lists.push({ url: href, title });
       }
     });
-    console.log('lists', lists);
-    for (const { url, title } of lists) {
+    for (let { url, title } of lists) {
+      title = title.replace(/\//g, '-');
       const { dir, isExist } = await createDir({ type: 'dagaier', name: title });
       if (!isExist) {
         await getPageInfo(dir, url, current);
@@ -34,7 +34,7 @@ function getPageList(page, current) {
 function getPageInfo(dir, page, current) {
   return crawlerInstance({
     url: base + page,
-    rateLimit: 5500,
+    rateLimit: 15500,
     proxy:"http://127.0.0.1:1087",
     userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7",
   }, async ($) => {
