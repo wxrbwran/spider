@@ -7,6 +7,7 @@ const dagaier = base + type;
 function getPageList(page, current) {
   return crawlerInstance({
     url: page,
+    rateLimit: 5500,
     proxy:"http://127.0.0.1:1087"
   }, async ($) => {
     const lists = [];
@@ -30,6 +31,7 @@ function getPageList(page, current) {
 function getPageInfo(dir, page, current) {
   return crawlerInstance({
     url: base + page,
+    rateLimit: 15500,
     proxy:"http://127.0.0.1:1087",
   }, async ($) => {
     const title =$('title').text().split(' - ')[0];
