@@ -18,7 +18,8 @@ function getPageList(page, current) {
         lists.push({ url: href, title });
       }
     });
-    for (const { url, title } of lists) {
+    for (let { url, title } of lists) {
+      title = title.replace(/\//g, '-');
       const { dir, isExist } = await createDir({ type: 'dagaier', name: title });
       if (!isExist) {
         await getPageInfo(dir, url, current);
