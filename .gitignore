@@ -11,7 +11,8 @@ data/novel/
 data/dagaier/
 data/aitaotu/
 data/
-/config
+/config/dagaier.js
+
 # Editor directories and files
 .idea
 .vscode
