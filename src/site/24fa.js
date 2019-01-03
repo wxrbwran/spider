@@ -1,10 +1,12 @@
 const { crawlerInstance, downloadInstance } = require('../crawlerInstance');
 const { createDir } = require('../../util/createDir');
 const { base, category, total } = require('../../config/24fa');
+const { userAgent } = require('../../config');
 
 function getPageList(page, current) {
   return crawlerInstance({
     url: page,
+    userAgent: userAgent(),
   }, async ($) => {
     const lists = [];
     let title = null;
@@ -28,6 +30,7 @@ function getPageInfo(dir, url, page, current = 1) {
   return crawlerInstance({
     url: current === 1 ? url :
       url.split('.html')[0] + 'p' + current + '.html',
+    userAgent: userAgent(),
   }, async ($) => {
     const lists = [];
     $('#content img').each(function () {
@@ -62,6 +65,7 @@ function downloadImages(dir, lists) {
     dir,
     type: 'multi',
     urls: lists,
+    userAgent: userAgent(),
   });
 }
 

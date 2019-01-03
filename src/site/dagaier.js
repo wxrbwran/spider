@@ -1,15 +1,14 @@
 const { crawlerInstance, downloadInstance } = require('../crawlerInstance');
 const { createDir } = require('../../util/createDir');
 const { base, type, total, start } = require('../../config/dagaier');
-
-const dagaier = base + type;
+const { userAgent } = require('../../config');
 
 function getPageList(page, current) {
   return crawlerInstance({
     url: page,
     rateLimit: 5500,
     proxy:"http://127.0.0.1:1087",
-    userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7",
+    userAgent: userAgent(),
   }, async ($) => {
     // console.log($('body').text());
     const lists = [];
@@ -22,7 +21,6 @@ function getPageList(page, current) {
     });
     for (let { url, title } of lists) {
       title = title.replace(/\//g, '-');
-      // const pagenum = await createDir({ type: 'dagaier', name: current });
       const { dir, isExist } = await createDir({ type: 'dagaier', name: title });
       if (!isExist) {
         await getPageInfo(dir, url, current);
@@ -37,7 +35,7 @@ function getPageInfo(dir, page, current) {
     url: base + page,
     rateLimit: 15500,
     proxy:"http://127.0.0.1:1087",
-    userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7",
+    userAgent: userAgent(),
   }, async ($) => {
     const title =$('title').text().split(' - ')[0];
     const lists = [];
@@ -68,6 +66,7 @@ function downloadImages(dir, lists) {
 }
 
 (async () => {
+  const dagaier = base + type;
   for (let i = start; i < total; i++) {
     console.log('爬取页码.==========',  i);
     await getPageList(dagaier + i, i);
