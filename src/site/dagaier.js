@@ -22,6 +22,7 @@ function getPageList(page, current) {
     });
     for (let { url, title } of lists) {
       title = title.replace(/\//g, '-');
+      // const pagenum = await createDir({ type: 'dagaier', name: current });
       const { dir, isExist } = await createDir({ type: 'dagaier', name: title });
       if (!isExist) {
         await getPageInfo(dir, url, current);
@@ -61,6 +62,8 @@ function downloadImages(dir, lists) {
     dir,
     type: 'multi',
     urls: lists,
+    proxy:"http://127.0.0.1:1087",
+    userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7",
   });
 }
 

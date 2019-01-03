@@ -89,19 +89,24 @@ const downloadInstance = (opt) => {
     });
     if (option.type === 'single') {
       console.log('option.url', option.url);
-      download_crawler.queue({
-        uri: option.url,
-        fileName: option.fileName,
-      });
+      const data = { uri: option.url, fileName: option.fileName, };
+      if (option.proxy) {
+        data.proxy = option.proxy;
+      }
+      download_crawler.queue(data);
     } else if (option.type === 'multi') {
       const l = option.urls.length;
       for (let i = 0; i < l; i++) {
         const uri = option.urls[i].url;
+
         const params = {
           uri,
           fileName: uri.split('/').slice(-1)[0],
           flag: i === l - 1,
         };
+        if (option.proxy) {
+          params.proxy = option.proxy;
+        }
         download_crawler.queue(params);
       }
     }
