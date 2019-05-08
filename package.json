@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "novel": "node src/site/novel.js",
+    "24fa": "node src/site/24fa.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
