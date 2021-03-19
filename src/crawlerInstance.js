@@ -1,4 +1,4 @@
-const Crawler = require('Crawler');
+const Crawler = require('crawler');
 const fs = require('fs');
 
 const crawlerInstance = (opt, callback) => {

@@ -1,8 +1,8 @@
-const { sleep } = require('../../util/sleep');
+const { sleep } = require('../util/sleep');
 const { crawlerInstance, downloadInstance } = require('../crawlerInstance');
-const { writeFileAsync } = require('../../util/writeFileAsync');
-const { createDir } = require('../../util/createDir');
-const { base, novelPage, maxCount } = require('../../config/novel');
+const { writeFileAsync } = require('../util/writeFileAsync');
+const { createDir } = require('../util/createDir');
+const { base, novelPage, maxCount } = require('../config/novel');
 
 // module.exports = {
 //   base: 'https://www.biquku.com',
